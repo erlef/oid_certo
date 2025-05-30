@@ -1,0 +1,65 @@
+on:
+  workflow_call:
+    inputs:
+      attest:
+        description: "Attest the build"
+        default: true
+        type: boolean
+
+name: "Build"
+
+permissions:
+  contents: read
+
+jobs:
+  binary:
+    name: "Binary"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+
+    env:
+      MIX_ENV: prod
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
+        with:
+          egress-policy: audit
+
+      - uses: mlugg/setup-zig@7dccf5e6d09267c55f815f2db29495f30ba2ebca # v2.0.1
+        with:
+          version: 0.14.0
+
+      - run: sudo apt-get install -y xz-utils
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-runtime-env
+        with:
+          mix-env: prod
+
+      - run: mix release --overwrite
+      - name: "Attest provenance"
+        uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+        id: attest-provenance
+        if: "${{ inputs.attest }}"
+        with:
+          subject-path: 'burrito_out/oid_certo_*'
+      - name: "Copy provenance"
+        if: "${{ inputs.attest }}"
+        run: |-
+          for FILE in burrito_out/oid_certo_*; do
+            cp "$ATTESTATION" $FILE.sigstore
+          done
+        env:
+          ATTESTATION: "${{ steps.attest-provenance.outputs.bundle-path }}"
+      
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: binary
+          path: burrito_out/*
+

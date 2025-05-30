@@ -25,15 +25,15 @@ defmodule OIDCerto.MixProject do
       oid_certo: [
         steps: [:assemble, &Burrito.wrap/1],
         burrito: [
+          # styler:sort
           targets: [
-            Linux_X64: [os: :linux, cpu: :x86_64]
-            # TODO: Re-enable
-            # Linux_ARM64: [os: :linux, cpu: :aarch64],
-            # macOS_X64: [os: :darwin, cpu: :x86_64],
-            # macOS_ARM64: [os: :darwin, cpu: :aarch64],
-            # Windows_X64: [os: :windows, cpu: :x86_64]
+            Linux_ARM64: [os: :linux, cpu: :aarch64],
+            Linux_X64: [os: :linux, cpu: :x86_64],
+            Windows_X64: [os: :windows, cpu: :x86_64],
             # Not currently supported by Burrito
-            # Windows_ARM64: [os: :windows, cpu: :aarch64]
+            # Windows_ARM64: [os: :windows, cpu: :aarch64],
+            macOS_ARM64: [os: :darwin, cpu: :aarch64],
+            macOS_X64: [os: :darwin, cpu: :x86_64]
           ]
         ]
       ]
@@ -48,6 +48,7 @@ defmodule OIDCerto.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:erlexec, "~> 2.2"},
+      {:ex_doc, "~> 0.38.2", only: [:dev]},
       {:localhost_run, "~> 0.1.0"},
       {:mime, "~> 2.0"},
       {:optimus, "~> 0.5.1"},
