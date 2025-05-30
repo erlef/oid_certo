@@ -69,4 +69,4 @@ jobs:
           gh release upload
           --repo ${{ github.repository }}
           --clobber "${{ inputs.releaseName }}"
-          docs.tar.gz* mix_dependency_submission*
+          docs.tar.gz* oid_certo*
