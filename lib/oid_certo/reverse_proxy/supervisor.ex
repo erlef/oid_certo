@@ -23,12 +23,17 @@ defmodule OIDCerto.ReverseProxy.Supervisor do
          port: 34_789,
          ip: :loopback,
          otp_app: :oid_certo},
-        {LocalhostRun,
-         internal_port: 34_789,
-         ssh_options: [user: ~c"any", key_cb: {:ssh_agent, []}],
-         connect_timeout: to_timeout(minute: 1)}
+        {LocalhostRun, internal_port: 34_789, ssh_options: ssh_options(), connect_timeout: to_timeout(minute: 1)}
       ],
       strategy: :one_for_one
     )
+  end
+
+  @spec ssh_options() :: :ssh.client_options()
+  defp ssh_options do
+    case System.fetch_env("SSH_AUTH_SOCK") do
+      :error -> [user: ~c"nokey"]
+      {:ok, _sock} -> [user: ~c"any", key_cb: {:ssh_agent, []}]
+    end
   end
 end

@@ -1,0 +1,63 @@
+name: "OIDCerto"
+description: "Run OIDCerto OpenID Certification Test Automation Tool"
+author: "Erlang Ecosystem Foundation"
+branding:
+  icon: check
+  color: purple
+inputs:
+  command:
+    description: "Command to run OIDCerto tool"
+    required: true
+  api-url:
+    description: "Certification API Base URL"
+    required: false
+    default: "https://www.certification.openid.net"
+  api-token:
+    description: "Certification API Token"
+    required: true
+outputs: {}
+runs:
+  using: "composite"
+  steps:
+    - name: "Download OIDCerto Tool"
+      if: env.OID_CERTO_SETUP != 'true'
+      uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 # v1.12
+      with:
+        repository: "erlef/oid_certo"
+        tag: "v0.1.0"
+        fileName: "oid_certo_${{ runner.os }}_${{ runner.arch }}"
+        out-file-path: "${{ runner.temp }}"
+    - name: "Verify OIDCerto Tool Provenance"
+      if: env.OID_CERTO_SETUP != 'true'
+      run: >-
+        gh attestation verify
+        --repo erlef/oid_certo
+        --source-ref refs/tags/v0.1.0
+        "${{ runner.temp }}/oid_certo_${{ runner.os }}_${{ runner.arch }}"
+      shell: "bash"
+      working-directory: "${{ runner.temp }}"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: "Make Tool Executable"
+      if: env.OID_CERTO_SETUP != 'true'
+      run: |-
+        chmod +x oid_certo_${{ runner.os }}_${{ runner.arch }};
+        mv oid_certo_${{ runner.os }}_${{ runner.arch }} oid_certo;
+        echo "$(pwd)" >> "$GITHUB_PATH"
+      shell: "bash"
+      working-directory: "${{ runner.temp }}"
+    - name: "Install Chromedriver"
+      if: env.OID_CERTO_SETUP != 'true'
+      uses: nanasess/setup-chromedriver@e93e57b843c0c92788f22483f1a31af8ee48db25 # v2.3.0
+    - name: "Mark as Installed"
+      if: env.OID_CERTO_SETUP != 'true'
+      run: echo "OID_CERTO_SETUP=true" >> "$GITHUB_ENV"
+      shell: "bash"
+
+    - name: "Run OIDCerto Tool"
+      run: oid_certo ${{ inputs.command }}
+      shell: "bash"
+      env:
+        API_BASE_URL: ${{ inputs.api-url }}
+        API_TOKEN: ${{ inputs.api-token }}
