@@ -24,7 +24,7 @@ runs:
       uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 # v1.12
       with:
         repository: "erlef/oid_certo"
-        tag: "v0.1.0"
+        tag: "v0.1.0-beta.1"
         fileName: "oid_certo_${{ runner.os }}_${{ runner.arch }}"
         out-file-path: "${{ runner.temp }}"
     - name: "Verify OIDCerto Tool Provenance"
@@ -32,7 +32,7 @@ runs:
       run: >-
         gh attestation verify
         --repo erlef/oid_certo
-        --source-ref refs/tags/v0.1.0
+        --source-ref refs/tags/v0.1.0-beta.1
         "${{ runner.temp }}/oid_certo_${{ runner.os }}_${{ runner.arch }}"
       shell: "bash"
       working-directory: "${{ runner.temp }}"
