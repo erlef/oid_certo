@@ -66,7 +66,7 @@ defmodule OIDCerto.Implementation do
   def handle_out(pid, out_fd) do
     fn
       :stdout, os_pid, "ACK" <> rest = message ->
-        IO.write(out_fd, message)
+        safe_write(out_fd, message)
 
         Logger.info("#{message}", os_pid: os_pid, device: :stdout)
 
@@ -76,7 +76,7 @@ defmodule OIDCerto.Implementation do
         end
 
       :stdout, os_pid, "NACK" <> rest = message ->
-        IO.write(out_fd, message)
+        safe_write(out_fd, message)
 
         Logger.info("#{message}", os_pid: os_pid, device: :stdout)
 
@@ -86,16 +86,24 @@ defmodule OIDCerto.Implementation do
         end
 
       :stdout, os_pid, message ->
-        IO.write(out_fd, message)
+        safe_write(out_fd, message)
 
         Logger.error("Unexpected message: #{message}", os_pid: os_pid, device: :stdout)
 
       :stderr, os_pid, message ->
-        IO.write(out_fd, message)
+        safe_write(out_fd, message)
 
         Logger.info("#{message}", os_pid: os_pid, device: :stderr)
 
         send(pid, {os_pid, message})
     end
+  end
+
+  defp safe_write(device, data) do
+    IO.write(device, data)
+  rescue
+    e in ErlangError ->
+      Logger.error("Failed to write to device", error: Exception.message(e), device: device)
+      :error
   end
 end
