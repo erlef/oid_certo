@@ -45,6 +45,9 @@ defmodule OIDCerto.Test.Plan do
     "oidcc-client-test-refresh-token-invalid-sub" => @login_success ++ ~w[trigger_refresh check_login_error]a,
     "oidcc-client-test-request-uri-signed-none" => @login_success,
     "oidcc-client-test-request-uri-signed-rs256" => @login_success,
+    "oidcc-client-test-rp-init-logout" => @login_success ++ ~w[trigger_logout]a,
+    "oidcc-client-test-rp-init-logout-no-state" => @login_success ++ ~w[trigger_logout]a,
+    "oidcc-client-test-rp-init-logout-other-state" => @login_success ++ ~w[trigger_logout]a,
     "oidcc-client-test-scope-userinfo-claims" => @login_success,
     "oidcc-client-test-signing-key-rotation" => @login_success ++ ~w[open_browser trigger_login check_logged_in]a,
     "oidcc-client-test-signing-key-rotation-just-before-signing" => @login_success,
@@ -205,6 +208,12 @@ defmodule OIDCerto.Test.Plan do
 
   def trigger_refresh(state, opts) do
     Wallaby.Browser.click(opts.wallaby_session, Wallaby.Query.css(~S|a[aria-label="Refresh"]|))
+
+    state
+  end
+
+  def trigger_logout(state, opts) do
+    Wallaby.Browser.click(opts.wallaby_session, Wallaby.Query.css(~S|a[aria-label="Logout"]|))
 
     state
   end

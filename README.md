@@ -127,6 +127,8 @@ OIDCerto drives a headless browser and asserts that specific elements exist:
 | Success | **sub** claim        | `sub`      |
 |         | Raw ID token         | `token`    |
 |         | `/userinfo` response | `userinfo` |
+|         | Refresh button/link  | `Refresh`  |
+|         | Logout button/link   | `Logout`   |
 | Failure | Error summary        | `error`    |
 
 You may keep elements hidden/off‑screen; presence in the DOM is enough.
