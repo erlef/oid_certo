@@ -48,7 +48,7 @@ defmodule OIDCerto.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:erlexec, "~> 2.2"},
-      {:ex_doc, "~> 0.38.2", only: [:dev]},
+      {:ex_doc, "~> 0.39.1", only: [:dev]},
       {:localhost_run, "~> 0.1.0"},
       {:mime, "~> 2.0"},
       {:optimus, "~> 0.5.1"},
