@@ -3,7 +3,7 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: "weekly"
+    interval: "monthly"
   groups:
     github-actions:
       applies-to: version-updates
@@ -12,5 +12,9 @@ updates:
 - package-ecosystem: mix
   directory: "/"
   schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+    interval: "monthly"
+  groups:
+    elixir:
+      applies-to: version-updates
+      patterns:
+        - "*"
