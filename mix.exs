@@ -56,7 +56,7 @@ defmodule OIDCerto.MixProject do
       {:req, "~> 0.5.10"},
       {:reverse_proxy_plug, "~> 3.0"},
       {:styler, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:wallaby, "~> 0.30.10"}
+      {:wallaby, "~> 0.31.0"}
     ]
   end
 end
